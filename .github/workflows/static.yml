@@ -1,43 +1,1814 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMAAN SIDDIQUI — Quantum Web Architect & AI Experience Engineer</title>
+  
+  <!-- Premium Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Core Simulation, Motion & Physics Engines -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+  <!-- Tailwind CSS Core CDN Integration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    if (typeof window !== 'undefined') {
+      const configureTailwind = () => {
+        if (window.tailwind) {
+          window.tailwind.config = {
+            theme: {
+              extend: {
+                colors: {
+                  cyanNeon: '#00f7ff',
+                  purplePlasma: '#9d00ff',
+                  pinkHologram: '#ff2bd6',
+                  emeraldGlow: '#00ffb3',
+                  luxuryWhite: '#f8fafc',
+                  deepBg: '#020308',
+                },
+                fontFamily: {
+                  grotesk: ['"Space Grotesk"', 'sans-serif'],
+                  sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                  mono: ['"Space Mono"', 'monospace'],
+                }
+              }
+            }
+          };
+        }
+      };
+      if (window.tailwind) {
+        configureTailwind();
+      } else {
+        window.addEventListener('load', configureTailwind);
+      }
+    }
+  </script>
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    
+    :root {
+      --c: #00f7ff;
+      --p: #8b00ff;
+      --pk: #ff2bd6;
+      --em: #00ffb3;
+      --bl: #0077ff;
+      --w: #f8fafc;
+      --bg: #020308;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      background-color: #020308;
+    }
+    
+    body {
+      background: var(--bg);
+      color: var(--w);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+      -webkit-font-smoothing: antialiased;
+    }
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    /* Premium Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020308;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #9d00ff, #00f7ff);
+      border-radius: 10px;
+    }
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    #cursor-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999999;
+    }
+    
+    #cur-cross {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999998;
+      transform: translate(-50%, -50%);
+      left: -100px;
+      top: -100px;
+      transition: transform 0.08s ease-out;
+    }
+    
+    #cur-cross .arm {
+      position: absolute;
+      background: var(--c);
+      transition: width .25s, height .25s, background .25s;
+    }
+    #cur-cross .arm.t { width: 1px; height: 18px; top: -22px; left: 50%; transform: translateX(-50%); }
+    #cur-cross .arm.b { width: 1px; height: 18px; bottom: -22px; left: 50%; transform: translateX(-50%); }
+    #cur-cross .arm.l { height: 1px; width: 18px; left: -22px; top: 50%; transform: translateY(-50%); }
+    #cur-cross .arm.r { height: 1px; width: 18px; right: -22px; top: 50%; transform: translateY(-50%); }
+    
+    #cur-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: var(--c);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 999999;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px var(--c), 0 0 20px var(--c);
+      left: -100px;
+      top: -100px;
+    }
+    
+    #cur-label {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999997;
+      font-family: 'Space Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--c);
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      white-space: nowrap;
+      transform: translate(24px, -50%);
+      left: -100px;
+      top: -100px;
+    }
 
-jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+    .glow-overlay {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(150px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+    }
+    .glow-cyan { background: radial-gradient(circle, #00f7ff, transparent 70%); }
+    .glow-purple { background: radial-gradient(circle, #9d00ff, transparent 70%); }
+    .glow-pink { background: radial-gradient(circle, #ff2bd6, transparent 70%); }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+      opacity: 0.4;
+    }
+
+    /* Shimmering Cyber Border Mechanics */
+    .cyber-border-wrap {
+      position: relative;
+      background: rgba(2, 3, 8, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 247, 255, 0.1);
+    }
+    .cyber-border-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 247, 255, 0.4), transparent);
+      z-index: -1;
+      animation: borderMove 6s linear infinite;
+      border-radius: inherit;
+    }
+    @keyframes borderMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    .glass-hud {
+      background: rgba(2, 3, 8, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(248, 250, 252, 0.05);
+    }
+
+    /* Preloader boot structures */
+    #boot {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 999990;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .boot-glow {
+      text-shadow: 0 0 30px rgba(0, 247, 255, 0.6), 0 0 60px rgba(157, 0, 255, 0.4);
+    }
+
+    @media (max-width: 900px) {
+      body { cursor: default !important; }
+      #cur-cross, #cur-dot, #cur-label { display: none !important; }
+    }
+
+    /* Custom typewriter glow indicator */
+    .typing-indicator span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: var(--c);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <!-- BACKGROUND GLOW PARADIGMS -->
+  <div class="glow-overlay glow-cyan w-[600px] h-[600px] top-[-200px] left-[-200px]"></div>
+  <div class="glow-overlay glow-purple w-[700px] h-[700px] top-[40%] right-[-150px]" id="mouse-ambient-glow"></div>
+  <div class="glow-overlay glow-pink w-[500px] h-[500px] bottom-[-100px] left-[10%]"></div>
+  <div class="scanlines"></div>
+
+  <!-- SCROLL PROGRESS INDICATOR -->
+  <div id="scroll-bar" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-purplePlasma via-cyanNeon to-pinkHologram z-[99999] w-0 transition-all duration-75"></div>
+
+  <!-- BOOT PRELOADER SYSTEM -->
+  <div id="boot" class="transition-opacity duration-700 ease-out">
+    <div class="boot-grid absolute inset-0 bg-[linear-gradient(rgba(0,247,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,247,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+    <div class="relative flex flex-col items-center justify-center text-center px-6">
+      <div id="boot-logo" class="font-grotesk text-4xl md:text-6xl font-bold tracking-[12px] text-cyanNeon mb-4 boot-glow uppercase">
+        AMAAN.SYS
+      </div>
+      <div id="boot-line" class="font-mono text-xs md:text-sm text-cyanNeon/60 tracking-[3px] uppercase mb-8 h-6">
+        PRE-FLIGHT HARNESS CALIBRATION...
+      </div>
+      <div class="w-72 md:w-[420px] h-[2px] bg-white/5 relative overflow-hidden rounded-full">
+        <div id="boot-fill" class="absolute left-0 top-0 h-full bg-gradient-to-r from-purplePlasma via-cyanNeon to-emeraldGlow w-0 transition-all duration-350"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE.JS LAYERS -->
+  <div id="three-canvas" class="fixed inset-0 z-0 pointer-events-none"></div>
+  <canvas id="particles-canvas" class="fixed inset-0 z-[1] pointer-events-none"></canvas>
+
+  <!-- LUXURY CURSORS -->
+  <div id="cur-cross">
+    <div class="arm t"></div>
+    <div class="arm b"></div>
+    <div class="arm l"></div>
+    <div class="arm r"></div>
+  </div>
+  <div id="cur-dot"></div>
+  <div id="cur-label">QUANTUM_SYS_ONLINE</div>
+
+  <!-- NAVIGATION HEADER -->
+  <nav class="fixed top-0 left-0 right-0 z-[1000] px-6 md:px-16 py-5 glass-hud flex items-center justify-between transition-all duration-300">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-cyanNeon animate-pulse shadow-[0_0_10px_#00f7ff]"></div>
+      <span class="font-grotesk text-xl font-bold tracking-[3px] text-white">AS<span class="text-cyanNeon">.SYS</span></span>
+    </div>
+    
+    <ul class="hidden lg:flex items-center gap-8 text-[11px] font-mono tracking-[2px] uppercase">
+      <li><a href="#hero" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Home</a></li>
+      <li><a href="#projects" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Projects</a></li>
+      <li><a href="#services" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Services</a></li>
+      <li><a href="#pricing" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Pricing</a></li>
+      <li><a href="#proposal-generator" class="text-emeraldGlow/80 hover:text-emeraldGlow transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,255,179,0.4)]">// AI Blueprint</a></li>
+      <li><a href="#terminal-section" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Shell</a></li>
+      <li><a href="#contact" class="text-white/60 hover:text-cyanNeon transition-colors duration-300 relative py-1 hover:shadow-[0_0_8px_rgba(0,247,255,0.4)]">// Contact</a></li>
+    </ul>
+
+    <!-- Instagram & Mobile Controls -->
+    <div class="flex items-center gap-4">
+      <a href="https://instagram.com/w1_web_master" target="_blank" class="text-white/60 hover:text-cyanNeon transition-colors text-lg flex items-center gap-2" title="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+        <span class="hidden sm:inline-block font-mono text-[10px] tracking-wider">@w1_web_master</span>
+      </a>
+      <button onclick="openTerminalCommand('secure_handshake')" class="hidden sm:inline-block border border-cyanNeon/30 hover:border-cyanNeon bg-cyanNeon/5 hover:bg-cyanNeon text-cyanNeon hover:text-deepBg px-6 py-2.5 rounded-none font-mono text-[10px] tracking-[2px] uppercase transition-all duration-300 shadow-[0_0_15px_rgba(0,247,255,0.1)] hover:shadow-[0_0_25px_rgba(0,247,255,0.3)]">
+        SECURE CONNECT
+      </button>
+      <button onclick="toggleMobileMenu()" class="lg:hidden text-white hover:text-cyanNeon text-xl focus:outline-none transition-colors duration-300">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div id="mobile-menu" class="fixed inset-0 z-[999] bg-deepBg/95 backdrop-blur-2xl flex flex-col justify-center items-center gap-8 transition-all duration-500 opacity-0 pointer-events-none transform translate-y-[-10px]">
+    <button onclick="toggleMobileMenu()" class="absolute top-8 right-8 text-white/60 hover:text-cyanNeon text-2xl">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <ul class="flex flex-col items-center gap-6 font-mono text-[14px] uppercase tracking-[3px] text-center">
+      <li><a href="#hero" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Home</a></li>
+      <li><a href="#projects" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Projects</a></li>
+      <li><a href="#services" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Services</a></li>
+      <li><a href="#pricing" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Pricing</a></li>
+      <li><a href="#proposal-generator" onclick="toggleMobileMenu()" class="text-emeraldGlow hover:text-emeraldGlow transition-colors">// AI Blueprint</a></li>
+      <li><a href="#terminal-section" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Shell</a></li>
+      <li><a href="#contact" onclick="toggleMobileMenu()" class="text-white/70 hover:text-cyanNeon transition-colors">// Contact</a></li>
+    </ul>
+    <button onclick="toggleMobileMenu(); openTerminalCommand('secure_handshake')" class="mt-4 border border-cyanNeon/30 bg-cyanNeon/5 text-cyanNeon px-8 py-3 font-mono text-[11px] tracking-[2px] uppercase">
+      SECURE CONNECT
+    </button>
+  </div>
+
+  <!-- HERO INTERACTIVE BLUEPRINT -->
+  <section id="hero" class="relative min-h-screen flex items-center px-6 md:px-16 pt-32 pb-16 overflow-hidden z-[2]">
+    <div class="max-w-[1200px] w-full mx-auto relative grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Left Space Info -->
+      <div class="lg:col-span-8 flex flex-col items-start relative">
+        <div class="hud-corner tl absolute top-[-10px] left-[-10px] w-[30px] h-[30px] border-t border-l border-cyanNeon/30"></div>
+        <div class="hud-corner tr absolute top-[-10px] right-[-10px] w-[30px] h-[30px] border-t border-r border-cyanNeon/30"></div>
+        <div class="hud-corner bl absolute bottom-[-10px] left-[-10px] w-[30px] h-[30px] border-b border-l border-cyanNeon/30"></div>
+        <div class="hud-corner br absolute bottom-[-10px] right-[-10px] w-[30px] h-[30px] border-b border-r border-cyanNeon/30"></div>
+        <div class="hud-scan absolute inset-0 bg-gradient-to-b from-cyanNeon/5 to-transparent h-[2px] pointer-events-none animate-bounce"></div>
+
+        <div class="hero-badge flex items-center gap-3 bg-cyanNeon/5 border border-cyanNeon/20 px-5 py-2 rounded-full font-mono text-[10px] md:text-[11px] text-cyanNeon tracking-[2px] uppercase mb-6 shadow-[0_0_15px_rgba(0,247,255,0.05)]">
+          <div class="w-2 h-2 rounded-full bg-emeraldGlow shadow-[0_0_8px_#00ffb3] animate-ping"></div>
+          STATUS: SYS_ONLINE_ACTIVE
+        </div>
+
+        <h1 class="font-grotesk text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-[-1px] md:tracking-[-2px] leading-[1.05] text-white mb-6 uppercase">
+          <span class="block overflow-hidden"><span class="line block">AMAAN SIDDIQUI</span></span>
+          <span class="block overflow-hidden"><span class="line block text-transparent bg-clip-text bg-gradient-to-r from-cyanNeon via-purplePlasma to-pinkHologram">BUILDING FUTURE</span></span>
+          <span class="block overflow-hidden"><span class="line block text-transparent bg-clip-text bg-gradient-to-r from-white via-pinkHologram to-cyanNeon">EXPERIENCES</span></span>
+        </h1>
+
+        <p id="hero-sub" class="text-sm md:text-base text-white/50 max-w-[620px] leading-relaxed mb-8 opacity-0">
+          I engineer high-frequency, responsive immersive interfaces, resolving state latencies, orchestrating custom 3D WebGL scenes, and bridging abstract computation with visually stunning frontend design. Powered by Gemini Core LLM interfaces.
+        </p>
+
+        <div id="hero-btns" class="flex flex-wrap gap-4 mb-12 opacity-0">
+          <button onclick="scrollToSec('projects')" class="bg-gradient-to-r from-cyanNeon to-purplePlasma hover:from-purplePlasma hover:to-pinkHologram text-deepBg hover:text-white px-8 py-4 rounded-none font-grotesk text-xs font-bold tracking-[2px] uppercase transition-all duration-500 shadow-[0_0_30px_rgba(0,247,255,0.25)] hover:shadow-[0_0_40px_rgba(255,43,214,0.4)] hover:scale-105">
+            <i class="fa-solid fa-cube mr-2"></i> EXPLORE LABS
+          </button>
+          <button onclick="scrollToSec('proposal-generator')" class="border border-emeraldGlow/40 bg-emeraldGlow/5 hover:bg-emeraldGlow text-white hover:text-deepBg px-8 py-4 rounded-none font-grotesk text-xs font-bold tracking-[2px] uppercase transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(0,255,179,0.1)]">
+            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> CREATE AI BLUEPRINT
+          </button>
+        </div>
+
+        <!-- System Stats Grid -->
+        <div id="hero-stats" class="grid grid-cols-3 gap-8 md:gap-12 border-t border-white/5 pt-8 w-full opacity-0">
+          <div>
+            <div class="font-grotesk text-3xl md:text-4xl font-extrabold text-cyanNeon tracking-tight">5.8G</div>
+            <div class="font-mono text-[9px] text-white/40 tracking-[2px] uppercase mt-1">Hz Synapse Clock</div>
+          </div>
+          <div>
+            <div class="font-grotesk text-3xl md:text-4xl font-extrabold text-purplePlasma tracking-tight">40+</div>
+            <div class="font-mono text-[9px] text-white/40 tracking-[2px] uppercase mt-1">Nodes Deployed</div>
+          </div>
+          <div>
+            <div class="font-grotesk text-3xl md:text-4xl font-extrabold text-emeraldGlow tracking-tight">&lt;1ms</div>
+            <div class="font-mono text-[9px] text-white/40 tracking-[2px] uppercase mt-1">Sync Latency</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right HUD Panel -->
+      <div id="hero-dashboard" class="lg:col-span-4 relative hidden lg:block opacity-0">
+        <div class="cyber-border-wrap p-6 rounded-none relative overflow-hidden">
+          <div class="flex items-center justify-between border-b border-white/5 pb-4 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyanNeon animate-ping"></span>
+              <span class="font-mono text-[10px] text-cyanNeon tracking-[1px] uppercase">SYS_LOGS_ACTIVE</span>
+            </div>
+            <span class="font-mono text-[9px] text-white/20">v4.0.0</span>
+          </div>
+          <div class="space-y-4 font-mono text-[10px] text-white/60">
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span>GEMINI INTEGRATION</span>
+              <span class="text-emeraldGlow font-bold">ONLINE</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span>PROJECTION MAP</span>
+              <span class="text-emeraldGlow">SYNCED (60FPS)</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span>COMPUTED PIXELS</span>
+              <span class="text-cyanNeon">2.44M/SEC</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span>COGNITIVE CORE</span>
+              <span class="text-pinkHologram">ENGAGED</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span>MEM LOAD</span>
+              <span class="text-purplePlasma">14.2%</span>
+            </div>
+          </div>
+          <div class="mt-6">
+            <div class="flex items-center justify-between text-[9px] font-mono mb-2">
+              <span>WAVE RESONANCE</span>
+              <span class="text-cyanNeon">87.4%</span>
+            </div>
+            <div class="w-full h-1.5 bg-white/5 relative overflow-hidden">
+              <div class="absolute left-0 top-0 h-full bg-cyanNeon w-[87.4%]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- PROJECT SHOWCASE DIRECTORY -->
+  <section id="projects" class="py-24 px-6 md:px-16 relative z-[2]">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-16">
+        <div class="sec-label text-cyanNeon font-mono text-xs tracking-widest">// LAB PROJECTS DIRECTORY</div>
+        <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2">ACTIVE SYSTEMS</h2>
+        <p class="text-white/50 text-sm md:text-base mt-2">Interactive frontends engineered with mathematical precision, lighting systems, and resilient state engines.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Lab Project 1 -->
+        <div class="pj-card cyber-border-wrap p-0 rounded-none overflow-hidden relative group">
+          <div class="pj-preview h-56 relative bg-deepBg/90 flex items-center justify-center border-b border-white/5 overflow-hidden">
+            <canvas class="pj-canvas-bg absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500" id="p1-canvas"></canvas>
+            <div class="text-5xl text-cyanNeon group-hover:scale-110 transition-transform duration-500 relative z-10">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div class="pj-num absolute top-4 left-4 font-mono text-[10px] text-cyanNeon tracking-[1px]">LAB_01</div>
+            <div class="pj-tags absolute top-4 right-4 flex gap-2">
+              <span class="bg-black/85 text-cyanNeon border border-cyanNeon/30 font-mono text-[9px] px-2 py-0.5">3D COMMERCE</span>
+              <span class="bg-black/85 text-cyanNeon border border-cyanNeon/30 font-mono text-[9px] px-2 py-0.5">WEBGL</span>
+            </div>
+          </div>
+          <div class="pj-body p-6">
+            <h3 class="font-grotesk text-xl font-bold tracking-[1px] mb-2 text-white">Nexus 3D Commerce</h3>
+            <p class="text-sm text-white/50 mb-6 leading-relaxed">Luxury viewport layouts configured with orbital asset viewers, responsive system controls, and frictionless visual transitions.</p>
+            <div class="flex gap-3">
+              <button onclick="openDemoModal(0)" class="flex-1 bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg font-mono text-xs font-bold py-2.5 uppercase tracking-wider hover:opacity-90">EXECUTE SYSTEM</button>
+              <button onclick="openTerminalCommand('run lab1')" class="border border-white/25 text-white hover:border-cyanNeon px-4"><i class="fa-solid fa-code"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Project 2 -->
+        <div class="pj-card cyber-border-wrap p-0 rounded-none overflow-hidden relative group">
+          <div class="pj-preview h-56 relative bg-deepBg/90 flex items-center justify-center border-b border-white/5 overflow-hidden">
+            <canvas class="pj-canvas-bg absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500" id="p2-canvas"></canvas>
+            <div class="text-5xl text-purplePlasma group-hover:scale-110 transition-transform duration-500 relative z-10">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="pj-num absolute top-4 left-4 font-mono text-[10px] text-cyanNeon tracking-[1px]">LAB_02</div>
+            <div class="pj-tags absolute top-4 right-4 flex gap-2">
+              <span class="bg-black/85 text-purplePlasma border border-purplePlasma/30 font-mono text-[9px] px-2 py-0.5">COGNITIVE UI</span>
+              <span class="bg-black/85 text-purplePlasma border border-purplePlasma/30 font-mono text-[9px] px-2 py-0.5">REALTIME</span>
+            </div>
+          </div>
+          <div class="pj-body p-6">
+            <h3 class="font-grotesk text-xl font-bold tracking-[1px] mb-2 text-white">AI SaaS Dashboard</h3>
+            <p class="text-sm text-white/50 mb-6 leading-relaxed">Analytical command arrays deploying GSAP interpolation systems, state caches, and responsive grid layouts.</p>
+            <div class="flex gap-3">
+              <button onclick="openDemoModal(1)" class="flex-1 bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg font-mono text-xs font-bold py-2.5 uppercase tracking-wider hover:opacity-90">EXECUTE SYSTEM</button>
+              <button onclick="openTerminalCommand('run lab2')" class="border border-white/25 text-white hover:border-cyanNeon px-4"><i class="fa-solid fa-code"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- SPECIALIZED CAPABILITIES SERVICES -->
+  <section id="services" class="py-24 px-6 md:px-16 relative z-[2] bg-gradient-to-b from-deepBg to-transparent">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-16">
+        <div class="sec-label text-purplePlasma font-mono text-xs tracking-widest">// SECURE SERVICES SPECTRUM</div>
+        <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2">OPERATIONAL SPECIALIZATION</h2>
+        <p class="text-white/50 text-sm md:text-base mt-2">Delivering clean, responsive interfaces built using high-performance graphic structures.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Service Card 1 -->
+        <div class="sv-card border border-white/5 bg-white/[0.01] hover:border-cyanNeon/30 p-8 rounded-none transition-all duration-300 relative group overflow-hidden">
+          <div class="absolute inset-0 bg-cyanNeon/[0.01] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="w-12 h-12 rounded-none bg-cyanNeon/10 flex items-center justify-center text-cyanNeon text-xl mb-6 border border-cyanNeon/20">
+            <i class="fa-solid fa-code"></i>
+          </div>
+          <h3 class="font-grotesk text-lg font-bold tracking-[1px] mb-2 text-white uppercase">Premium Front-End</h3>
+          <p class="text-xs text-white/40 leading-relaxed">Responsive viewport layouts configured using atomic Tailwind structures, fast-load rendering pipelines, and micro-interactions.</p>
+          <div class="mt-6 inline-block font-mono text-[9px] text-cyanNeon border border-cyanNeon/20 px-2 py-1">CORE: VITE / REACT / GSAP</div>
+        </div>
+
+        <!-- Service Card 2 -->
+        <div class="sv-card border border-white/5 bg-white/[0.01] hover:border-purplePlasma/30 p-8 rounded-none transition-all duration-300 relative group overflow-hidden">
+          <div class="absolute inset-0 bg-purplePlasma/[0.01] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="w-12 h-12 rounded-none bg-purplePlasma/10 flex items-center justify-center text-purplePlasma text-xl mb-6 border border-purplePlasma/20">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <h3 class="font-grotesk text-lg font-bold tracking-[1px] mb-2 text-white uppercase">3D Immersive Design</h3>
+          <p class="text-xs text-white/40 leading-relaxed">Designing complex interactive WebGL environments, particles starfields, and physics layouts mapped within compact dimensions.</p>
+          <div class="mt-6 inline-block font-mono text-[9px] text-purplePlasma border border-purplePlasma/20 px-2 py-1">ENGINE: THREE.JS</div>
+        </div>
+
+        <!-- Service Card 3 -->
+        <div class="sv-card border border-white/5 bg-white/[0.01] hover:border-pinkHologram/30 p-8 rounded-none transition-all duration-300 relative group overflow-hidden">
+          <div class="absolute inset-0 bg-pinkHologram/[0.01] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="w-12 h-12 rounded-none bg-pinkHologram/10 flex items-center justify-center text-pinkHologram text-xl mb-6 border border-pinkHologram/20">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h3 class="font-grotesk text-lg font-bold tracking-[1px] mb-2 text-white uppercase">Responsive Ecosystems</h3>
+          <p class="text-xs text-white/40 leading-relaxed">Strict fluid layouts that scale seamlessly on mobile devices, preventing displacement or rendering glitches on high-res monitors.</p>
+          <div class="mt-6 inline-block font-mono text-[9px] text-pinkHologram border border-pinkHologram/20 px-2 py-1">ENGINE: ATOMIC LAYOUT</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- PREMIUM SOLUTIONS ACQUISITION -->
+  <section id="pricing" class="py-24 px-6 md:px-16 relative z-[2]">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-16 text-center">
+        <div class="sec-label text-cyanNeon font-mono text-xs tracking-widest text-center">// SYSTEM INTEGRATION SPECS</div>
+        <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2 text-center">ACQUISITION TIERS</h2>
+        <p class="text-white/50 text-sm md:text-base mt-2 mx-auto text-center max-w-xl">Choose an optimized system package to immediately launch secure gateway configurations.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Pricing Tier 1: STARTER -->
+        <div class="pr-card border border-white/5 bg-deepBg/80 p-8 flex flex-col justify-between rounded-none relative group transition-all duration-300 hover:border-cyanNeon/20">
+          <div class="absolute top-0 left-0 right-0 h-[2px] bg-cyanNeon/30"></div>
+          <div>
+            <div class="font-mono text-[10px] text-cyanNeon tracking-[2px] uppercase mb-4">STARTER</div>
+            <div class="font-grotesk text-4xl font-extrabold text-white mb-2">?999</div>
+            <div class="font-mono text-[9px] text-white/30 uppercase mb-8">Rapid structural assessments and layout calibrations</div>
+            <ul class="space-y-4 text-xs text-white/60 mb-8 border-t border-white/5 pt-6">
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-cyanNeon"></span> Responsive Landing Page</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-cyanNeon"></span> Mobile Friendly Core Layout</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-cyanNeon"></span> Modern UI Aesthetics</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-cyanNeon"></span> Fast Loading Diagnostics</li>
+            </ul>
+          </div>
+          <button onclick="initiateClientPay('Starter Plan', 999)" class="btn-buy border border-cyanNeon/30 hover:border-cyanNeon bg-cyanNeon/5 hover:bg-cyanNeon text-cyanNeon hover:text-deepBg py-3 text-xs font-mono tracking-widest transition-all duration-300">
+            DEPLOY STARTER
+          </button>
+        </div>
+
+        <!-- Pricing Tier 2: PRO (Recommended) -->
+        <div class="pr-card border border-cyanNeon/30 bg-deepBg/90 p-8 flex flex-col justify-between rounded-none relative scale-100 lg:scale-105 group transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,247,255,0.05)]">
+          <div class="absolute top-[-1px] left-50% translate-x-[-50%] bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg font-mono text-[8px] font-bold tracking-[2px] px-4 py-1 uppercase">RECOMMENDED PRE-SET</div>
+          <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyanNeon to-purplePlasma"></div>
+          <div class="mt-4">
+            <div class="font-mono text-[10px] text-purplePlasma tracking-[2px] uppercase mb-4">PRO</div>
+            <div class="font-grotesk text-4xl font-extrabold text-white mb-2">?2,999</div>
+            <div class="font-mono text-[9px] text-white/30 uppercase mb-8">Visual business configurations utilizing advanced motion</div>
+            <ul class="space-y-4 text-xs text-white/60 mb-8 border-t border-white/5 pt-6">
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-cyanNeon"></span> Complete Business Website</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-cyanNeon"></span> Premium UI/UX Architecture</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-cyanNeon"></span> Responsive Layout Framework</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-cyanNeon"></span> Smooth Interpolation Flows</li>
+            </ul>
+          </div>
+          <button onclick="initiateClientPay('Pro Plan', 2999)" class="btn-buy bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg hover:text-white py-3 text-xs font-mono tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(0,247,255,0.15)]">
+            DEPLOY PRO
+          </button>
+        </div>
+
+        <!-- Pricing Tier 3: ULTIMATE -->
+        <div class="pr-card border border-white/5 bg-deepBg/80 p-8 flex flex-col justify-between rounded-none relative group transition-all duration-300 hover:border-pinkHologram/20">
+          <div class="absolute top-0 left-0 right-0 h-[2px] bg-pinkHologram/30"></div>
+          <div>
+            <div class="font-mono text-[10px] text-pinkHologram tracking-[2px] uppercase mb-4">ULTIMATE</div>
+            <div class="font-grotesk text-4xl font-extrabold text-white mb-2">?7,999</div>
+            <div class="font-mono text-[9px] text-white/30 uppercase mb-8">Custom interactive systems housing volumetric shaders</div>
+            <ul class="space-y-4 text-xs text-white/60 mb-8 border-t border-white/5 pt-6">
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-pinkHologram"></span> Advanced 3D Interactive Design</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-pinkHologram"></span> Custom Three.js Rendering Space</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-pinkHologram"></span> AI-Inspired Interactive HUD</li>
+              <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-pinkHologram"></span> High-end Custom Assets</li>
+            </ul>
+          </div>
+          <button onclick="initiateClientPay('Ultimate Plan', 7999)" class="btn-buy border border-pinkHologram/30 hover:border-pinkHologram bg-pinkHologram/5 hover:bg-pinkHologram text-pinkHologram hover:text-deepBg py-3 text-xs font-mono tracking-widest transition-all duration-300">
+            DEPLOY ULTIMATE
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- NEW AI COGNITIVE PROPOSAL GENERATOR -->
+  <section id="proposal-generator" class="py-24 px-6 md:px-16 relative z-[2] bg-gradient-to-b from-transparent to-deepBg">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5">
+          <div class="sec-label text-emeraldGlow font-mono text-xs tracking-widest">// COGNITIVE BLUEPRINT ENGINE</div>
+          <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2 text-white">QUANTUM DESIGN GENERATOR</h2>
+          <p class="text-white/50 text-sm md:text-base mt-4 leading-relaxed">
+            Enter your custom application idea, target market, or system specs. Our integrated **Gemini AI Engine** will evaluate your concept on the fly and output a premium technological design blueprint.
+          </p>
+          <div class="mt-8 space-y-3 font-mono text-xs text-white/40">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-microchip text-emeraldGlow"></i> Custom WebGL architecture parameters</div>
+            <div class="flex items-center gap-3"><i class="fa-solid fa-bezier-curve text-purplePlasma"></i> Motion timeline planning curves</div>
+            <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-cyanNeon"></i> Recommended acquisition package match</div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="cyber-border-wrap p-6 md:p-8 rounded-none relative">
+            <div class="flex items-center justify-between border-b border-white/5 pb-4 mb-4">
+              <span class="font-mono text-[10px] text-emeraldGlow tracking-[2px] uppercase">COGNITION_SANDBOX</span>
+              <span class="font-mono text-[9px] text-white/30">INTELLIGENT SEEDER</span>
+            </div>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block font-mono text-[10px] text-white/50 uppercase mb-2">Your App/Project Concept Seed</label>
+                <input type="text" id="ai-blueprint-prompt" class="w-full bg-emeraldGlow/[0.02] border border-white/10 text-white px-4 py-3 text-xs font-mono outline-none focus:border-emeraldGlow/40 transition-colors" placeholder="e.g. A futuristic 3D luxury wristwatch store with planetary coordinates...">
+              </div>
+              <button onclick="generateAIProjectBlueprint()" id="btn-blueprint-generate" class="w-full bg-gradient-to-r from-emeraldGlow to-cyanNeon text-deepBg font-grotesk text-xs font-bold py-4 uppercase tracking-[2px] transition-all duration-300 shadow-[0_0_20px_rgba(0,255,179,0.15)] hover:scale-[1.02]">
+                GENERATE QUANTUM BLUEPRINT <i class="fa-solid fa-wand-magic-sparkles ml-2"></i>
+              </button>
+            </div>
+
+            <!-- Blueprint Output Pane -->
+            <div id="blueprint-result-pane" class="hidden mt-6 pt-6 border-t border-white/5 font-mono text-[11px] text-white/85 leading-relaxed bg-black/40 p-4 max-h-72 overflow-y-auto">
+              <div class="flex items-center gap-2 mb-3 text-emeraldGlow">
+                <span class="w-1.5 h-1.5 rounded-full bg-emeraldGlow animate-ping"></span>
+                <span>SYSTEM DESIGN BLUEPRINT COMPILED:</span>
+              </div>
+              <div id="blueprint-markdown-text" class="whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- NATIVE OPERATING COMMAND SYSTEM -->
+  <section id="terminal-section" class="py-24 px-6 md:px-16 relative z-[2]">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-12">
+        <div class="sec-label text-cyanNeon font-mono text-xs tracking-widest">// VIRTUALIZED CONTROL CONSOLE</div>
+        <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2">AMAAN_QUANTUM_SHELL v4.0</h2>
+        <p class="text-white/50 text-sm md:text-base mt-2">Initialize diagnostic commands. Unrecognized requests compile automatically through the **Gemini AI Shell Interface**.</p>
+      </div>
+
+      <div class="trm-box border border-cyanNeon/20 bg-deepBg/90 overflow-hidden shadow-[0_0_40px_rgba(0,247,255,0.05)]">
+        <div class="trm-bar flex items-center justify-between px-5 py-3.5 border-b border-cyanNeon/10 bg-cyanNeon/5">
+          <div class="flex items-center gap-2">
+            <div class="td w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
+            <div class="td w-2.5 h-2.5 rounded-full bg-[#febc2e]"></div>
+            <div class="td w-2.5 h-2.5 rounded-full bg-[#28c840]"></div>
+          </div>
+          <span class="font-mono text-[9px] text-cyanNeon/50 tracking-[1px]">amaan@quantum-shell: ~</span>
+        </div>
+        <div id="trm-output" class="p-6 h-72 overflow-y-auto font-mono text-[11px] md:text-xs text-emeraldGlow/80 space-y-3 leading-relaxed scroll-smooth">
+          <div class="text-white/40">[SECURE PORT PROTOCOL SYNCHRONIZED]</div>
+          <div class="text-purplePlasma">[GEMINI CORE COGNITION ONLINE]</div>
+          <div>Welcome to AS Shell. Run commands directly or input queries in the neural chatbot. Try commands or ask questions freely!</div>
+        </div>
+        <div class="trm-inp-row flex items-center gap-3 p-4 border-t border-cyanNeon/10">
+          <span class="font-mono text-xs text-cyanNeon/60">amaan@sys:~$</span>
+          <input type="text" id="trm-input" class="bg-transparent border-none outline-none text-white font-mono text-xs flex-1" placeholder="Enter diagnostic command or ask AI anything..." autocomplete="off">
+          <div class="t-cur w-1.5 h-4 bg-cyanNeon animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEPARATOR -->
+  <div class="nd h-[1px] bg-gradient-to-r from-transparent via-cyanNeon/30 to-transparent my-4"></div>
+
+  <!-- SECURE ENCRYPTED CHANNELS CONTACT -->
+  <section id="contact" class="py-24 px-6 md:px-16 relative z-[2]">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="mb-16">
+        <div class="sec-label text-pinkHologram font-mono text-xs tracking-widest">// SECURE DIRECTIVE TUNNEL</div>
+        <h2 class="font-grotesk text-3xl md:text-5xl font-bold uppercase mt-2">COMMUNICATE_LINK</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Coordinates block -->
+        <div class="lg:col-span-5 flex flex-col justify-between">
+          <div>
+            <p class="text-sm text-white/55 leading-relaxed mb-8">Establish secure cryptographic return signals. Data vectors compiled below execute directly to authenticated digital channels.</p>
+            
+            <div class="space-y-6">
+              <div class="flex items-center gap-4 border-b border-white/5 pb-4">
+                <div class="w-10 h-10 rounded-none bg-cyanNeon/5 border border-cyanNeon/10 flex items-center justify-center text-cyanNeon text-sm"><i class="fa-solid fa-envelope"></i></div>
+                <div>
+                  <div class="font-mono text-[9px] text-white/30 uppercase tracking-[1px]">Holographic Mailbox</div>
+                  <div class="text-xs text-white">amaanmohd8186@gmail.com</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 border-b border-white/5 pb-4">
+                <div class="w-10 h-10 rounded-none bg-purplePlasma/5 border border-purplePlasma/10 flex items-center justify-center text-purplePlasma text-sm"><i class="fa-brands fa-instagram"></i></div>
+                <div>
+                  <div class="font-mono text-[9px] text-white/30 uppercase tracking-[1px]">Instagram Node</div>
+                  <a href="https://instagram.com/w1_web_master" target="_blank" class="text-xs text-cyanNeon hover:underline">@w1_web_master</a>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 border-b border-white/5 pb-4">
+                <div class="w-10 h-10 rounded-none bg-emeraldGlow/5 border border-emeraldGlow/10 flex items-center justify-center text-emeraldGlow text-sm"><i class="fa-solid fa-map-pin"></i></div>
+                <div>
+                  <div class="font-mono text-[9px] text-white/30 uppercase tracking-[1px]">Coordinates Origin</div>
+                  <div class="text-xs text-white">New Delhi, India [UTC +5:30]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mt-8">
+            <a href="https://github.com" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-cyanNeon hover:text-deepBg flex items-center justify-center text-sm border border-white/10 hover:border-cyanNeon transition-all duration-300"><i class="fa-brands fa-github"></i></a>
+            <a href="https://linkedin.com" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-cyanNeon hover:text-deepBg flex items-center justify-center text-sm border border-white/10 hover:border-cyanNeon transition-all duration-300"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://instagram.com/w1_web_master" target="_blank" class="w-10 h-10 bg-white/5 hover:bg-cyanNeon hover:text-deepBg flex items-center justify-center text-sm border border-white/10 hover:border-cyanNeon transition-all duration-300"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Encrypted form dispatcher -->
+        <form onsubmit="handleSendMsg(event)" class="lg:col-span-7 space-y-4">
+          <input type="text" id="c-name" class="w-full bg-cyanNeon/[0.02] border border-white/10 text-white px-5 py-4 text-xs font-mono outline-none focus:border-cyanNeon/40 transition-colors" placeholder="SECURE_ID (Your Name)" required>
+          <input type="email" id="c-email" class="w-full bg-cyanNeon/[0.02] border border-white/10 text-white px-5 py-4 text-xs font-mono outline-none focus:border-cyanNeon/40 transition-colors" placeholder="COMM_ADDRESS (Your Email)" required>
+          <textarea id="c-msg" class="w-full h-32 bg-cyanNeon/[0.02] border border-white/10 text-white px-5 py-4 text-xs font-mono outline-none focus:border-cyanNeon/40 transition-colors resize-none" placeholder="SECURE_DATA_PACKETS (Your Message)" required></textarea>
+          <button type="submit" class="w-full bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg hover:text-white py-4 font-grotesk text-xs font-bold uppercase tracking-[2px] shadow-[0_0_30px_rgba(0,247,255,0.15)] hover:shadow-[0_0_40px_rgba(255,43,214,0.3)] transition-all duration-300">
+            TRANSMIT SECURE PACKETS <i class="fa-solid fa-paper-plane ml-2"></i>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER BLOCK -->
+  <footer class="py-12 px-6 md:px-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 relative z-[2] bg-deepBg">
+    <div class="font-grotesk text-lg font-bold tracking-[3px] text-white">AS<span class="text-cyanNeon">.SYS_</span></div>
+    <div class="font-mono text-[9px] text-white/30 tracking-[1px] text-center">© 2026 AMAAN SIDDIQUI. DIGITAL VECTORS COMPILED.</div>
+    <div class="flex items-center gap-4 text-xs font-mono text-pinkHologram tracking-[1px]">
+      <a href="https://instagram.com/w1_web_master" target="_blank" class="hover:text-cyanNeon transition-colors">// INSTAGRAM: @w1_web_master</a>
+    </div>
+  </footer>
+
+  <!-- NEURAL CORE CHATBOT SYSTEM -->
+  <button id="nexus-btn" onclick="toggleNexusAI()" class="fixed bottom-6 right-6 z-[5000] w-14 h-14 bg-gradient-to-r from-purplePlasma to-cyanNeon rounded-full border-none flex items-center justify-center text-deepBg text-xl shadow-[0_0_30px_rgba(0,247,255,0.4)] hover:scale-115 transition-transform duration-300 focus:outline-none">
+    <i class="fa-solid fa-brain"></i>
+  </button>
+  <div id="nexus-win" class="fixed bottom-24 right-6 w-80 md:w-96 bg-deepBg/95 backdrop-blur-2xl border border-cyanNeon/20 z-[5001] shadow-[0_40px_80px_rgba(0,0,0,0.8),0_0_40px_rgba(0,247,255,0.1)] transform scale-0 origin-bottom-right transition-transform duration-300 overflow-hidden">
+    <div class="nx-hdr flex items-center justify-between p-4 border-b border-cyanNeon/15 bg-gradient-to-r from-purplePlasma/20 to-cyanNeon/10">
+      <div class="flex items-center gap-3">
+        <div class="nx-av w-8 h-8 rounded-full bg-cyanNeon flex items-center justify-center text-deepBg text-xs font-bold"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <div class="nx-name font-grotesk text-xs font-bold text-white tracking-[1px]">NEURAL COMPANION</div>
+          <div class="nx-st font-mono text-[8px] text-emeraldGlow tracking-[1px]">STATUS: LIVE_COGNITIVE (GEMINI)</div>
+        </div>
+      </div>
+      <button onclick="toggleNexusAI()" class="text-white/50 hover:text-cyanNeon transition-colors text-sm focus:outline-none"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="nx-msgs" class="h-64 p-4 overflow-y-auto flex flex-col gap-3 font-mono text-[10px] md:text-xs">
+      <div class="msg ai p-3 bg-purplePlasma/10 border border-purplePlasma/10 max-w-[85%] self-start text-white/85">
+        Handshake complete. Ask me anything! I am Amaan's live Gemini intelligence module. I know everything about his projects, skills, pricing models, and how to start deployment protocols!
+      </div>
+    </div>
+    <div class="nx-inp-row flex gap-2 p-3 border-t border-cyanNeon/10 bg-deepBg">
+      <input type="text" id="nx-inp" class="flex-1 bg-white/5 border border-white/5 text-white text-xs px-3 py-2 outline-none focus:border-cyanNeon/30" placeholder="Ask Gemini custom proposal questions..." onkeydown="checkNxKey(event)">
+      <button onclick="sendNxMsg()" class="bg-cyanNeon hover:bg-cyanNeon/80 text-deepBg px-4 py-2 text-xs font-bold transition-colors"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- SIMULATION PORTAL OVERLAY -->
+  <div id="demo-modal" class="fixed inset-0 z-[99990] hidden items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+    <div class="demo-inner w-full max-w-[900px] bg-deepBg border border-cyanNeon/30 overflow-hidden relative shadow-[0_0_60px_rgba(0,247,255,0.15)]">
+      <div class="demo-bar flex items-center justify-between px-5 py-3 border-b border-cyanNeon/15 bg-white/5">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
+        </div>
+        <span id="demo-title" class="font-mono text-[10px] text-cyanNeon/60 tracking-[1px] uppercase">PORTAL_MONITOR</span>
+        <button onclick="closeDemoModal()" class="text-white/40 hover:text-pinkHologram transition-colors text-lg focus:outline-none"><i class="fa-solid fa-rectangle-xmark"></i></button>
+      </div>
+      <div class="demo-body relative">
+        <div id="demo-hud-metrics" class="demo-hud absolute top-4 left-4 font-mono text-[9px] text-cyanNeon/40 z-10 select-none pointer-events-none uppercase"></div>
+        <canvas id="demo-canvas" class="w-full h-80 md:h-[380px] bg-black/40 block"></canvas>
+      </div>
+      <div class="demo-info p-6 border-t border-cyanNeon/15 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <div class="flex gap-2 mb-2">
+            <span id="demo-tag-1" class="demo-tag font-mono text-[9px] bg-cyanNeon/10 text-cyanNeon border border-cyanNeon/20 px-2 py-0.5">WAVE_INTERFERE</span>
+            <span id="demo-tag-2" class="demo-tag font-mono text-[9px] bg-cyanNeon/10 text-cyanNeon border border-cyanNeon/20 px-2 py-0.5">SYS_CALIBRATED</span>
+          </div>
+          <p id="demo-desc" class="text-xs text-white/50 max-w-[500px]">Simulating multi-slit wave interference patterns with custom visual values.</p>
+        </div>
+        <div class="flex gap-3 shrink-0">
+          <button id="demo-action-btn" onclick="triggerDemoInteraction()" class="bg-purplePlasma text-white text-xs px-4 py-2 font-mono hover:opacity-90">INJECT INTERFERENCE</button>
+          <button onclick="closeDemoModal()" class="border border-white/20 text-white text-xs px-4 py-2 font-mono">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT CLIENT PORTAL -->
+  <div id="pay-modal" class="fixed inset-0 z-[99992] hidden items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+    <div class="pay-inner w-full max-w-[440px] bg-deepBg border border-cyanNeon/20 p-8 relative shadow-[0_0_50px_rgba(0,247,255,0.1)]">
+      <button onclick="closePayModal()" class="absolute top-4 right-4 text-white/40 hover:text-pinkHologram focus:outline-none transition-colors"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="font-grotesk text-2xl font-bold text-white uppercase tracking-[1px] mb-1">Onboard Core</div>
+      <div class="font-mono text-[10px] text-white/30 uppercase tracking-[1px] mb-6">Initialize test sandbox transaction links</div>
+      
+      <div class="bg-white/5 border border-white/5 p-4 mb-6">
+        <div class="font-mono text-[9px] text-cyanNeon uppercase tracking-[1px]">Selected Module</div>
+        <div id="pay-selected-plan" class="font-grotesk text-lg font-bold text-white mt-1">STARTER</div>
+        <div class="font-grotesk text-3xl font-extrabold text-cyanNeon mt-2">?<span id="pay-val-str">999</span></div>
+      </div>
+
+      <form onsubmit="launchRazorpayCheckout(event)" class="space-y-4">
+        <input type="text" id="pay-name" class="w-full bg-cyanNeon/[0.02] border border-white/10 text-white px-4 py-3.5 text-xs font-mono outline-none focus:border-cyanNeon/40" placeholder="CLIENT_NAME" required>
+        <input type="email" id="pay-email" class="w-full bg-cyanNeon/[0.02] border border-white/10 text-white px-4 py-3.5 text-xs font-mono outline-none focus:border-cyanNeon/40" placeholder="CONTACT_EMAIL" required>
+        <input type="tel" id="pay-phone" class="w-full bg-cyanNeon/[0.02] border border-white/10 text-white px-4 py-3.5 text-xs font-mono outline-none focus:border-cyanNeon/40" placeholder="TELEPHONE_CONTACT" required>
+        <button type="submit" class="w-full bg-gradient-to-r from-cyanNeon to-purplePlasma text-deepBg hover:text-white py-4 font-grotesk text-xs font-bold uppercase tracking-[2px] transition-all duration-300">
+          LAUNCH GATEWAY CHECKOUT
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SUCCESS DIALOG -->
+  <div id="succ-popup" class="fixed inset-0 z-[99995] hidden items-center justify-center bg-black/90 backdrop-blur-xl">
+    <canvas id="confetti-canvas" class="fixed inset-0 z-[99994] pointer-events-none"></canvas>
+    <div class="succ-card w-full max-w-[460px] bg-deepBg border border-emeraldGlow/40 p-10 text-center relative shadow-[0_0_80px_rgba(0,255,179,0.15)] mx-4">
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-emeraldGlow"></div>
+      <div class="succ-ico text-5xl text-emeraldGlow mb-6"><i class="fa-solid fa-circle-check"></i></div>
+      <h3 class="font-grotesk text-2xl font-bold text-emeraldGlow uppercase tracking-[1px] mb-2">TRANSACTION SUCCESS</h3>
+      <p class="text-xs text-white/50 leading-relaxed mb-6">Payment processed successfully through Razorpay Test Gateway! Integration parameters deployed safely.</p>
+      <div id="succ-trans-id" class="font-mono text-[9px] text-white/40 bg-white/5 border border-white/5 py-2.5 px-4 mb-8 select-all break-all">TXN_RZP_TEST_627XG7W</div>
+      <button onclick="closeSuccessPopup()" class="bg-emeraldGlow text-deepBg hover:bg-emeraldGlow/85 px-10 py-4 text-xs font-bold tracking-[2px] uppercase transition-all duration-300 focus:outline-none">
+        DISMISS DIRECTIVE
+      </button>
+    </div>
+  </div>
+
+  <!-- CORE CODE ENGINE SCRIPTS -->
+  <script>
+    // --------------- GLOBAL STATE SYSTEM ---------------
+    let scene, camera, renderer, starParticles, mainKnot;
+    let currentDemoProj = 0;
+    let demoCanvas, demoCtx;
+    let demoAnimId = null;
+    let demoPhase = 0;
+    let demoInteractionsCount = 0;
+    let customConfettiId = null;
+    let currentSelectedPlan = '';
+    let currentSelectedAmount = 0;
+
+    // Gemini API Setup
+    // Canvas platform automatically injects the active API key on runtime when the fetch key is blank.
+    const GEMINI_API_KEY = "";
+    const GEMINI_MODEL = "gemini-3-flash-preview";
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+    // System prompt containing comprehensive profile metrics of Amaan Siddiqui
+    const SYSTEM_PERSONA_PROMPT = `
+You are the "AS-Nexus AI Core", the intelligent conversational companion of Amaan Siddiqui's personal portfolio.
+Your persona is incredibly smart, futuristic, elite, polite, highly skilled, and professional. You speak in a highly refined startup developer tone.
+Here are the absolute parameters of Amaan Siddiqui's system architecture:
+- Who is Amaan: Creative Technologist, Futuristic UI Engineer, Three.js Master, Cinematic Motion Designer, and Advanced AI Developer.
+- Core Stack: HTML5, CSS3, Atomic Tailwind structures, Vanilla JS, Three.js, GSAP (GreenSock), Canvas simulations.
+- Major Lab Projects:
+  1. "Nexus 3D Commerce" (Active 3D viewport systems, orbital viewports, responsive control structures).
+  2. "AI SaaS Dashboard" (GSAP visual timeline curves, analytics widgets, cached rendering).
+- System Integration Plans:
+  1. Starter: ?999 (Responsive Landing Page, atomic viewport frameworks, optimized lightweight diagnostic).
+  2. Pro: ?2,999 (Complete premium business workspace, high-fidelity UI animations, frictionless GSAP scaling).
+  3. Ultimate: ?7,999 (Full WebGL Three.js interactive spaces, custom volumetric lighting, AI-inspired HUDs, curated elements).
+- Contact: amaanmohd8186@gmail.com
+- Social: Instagram handles is @w1_web_master.
+Answer briefly, keep your tone futuristic, clean, and use cybernetic metaphors where appropriate. Respond in a concise manner suitable for a chat window (generally within 2-4 sentences max). Never output markdown leak structures.
+`;
+
+    // --------------- BOOT PRELOADER ANIMATIONS ---------------
+    document.addEventListener("DOMContentLoaded", () => {
+      const bootLines = [
+        "CALIBRATING CORE MATRIX...",
+        "MOUNTING REVOLVING SHADERS...",
+        "SYNCHRONIZING SECURE CHANNELS...",
+        "INITIALIZING GEMINI COGNITION ORBS...",
+        "ACQUIRING INSTAGRAM COORDINATES...",
+        "DEPLOYING VECTOR GRAPHIC MATRICES...",
+        "COMPILING TRANSACTION COGNITIONS..."
+      ];
+      
+      let index = 0;
+      const bootLine = document.getElementById("boot-line");
+      const bootFill = document.getElementById("boot-fill");
+      
+      const interval = setInterval(() => {
+        if (index < bootLines.length) {
+          bootLine.innerText = bootLines[index];
+          let pct = ((index + 1) / bootLines.length) * 100;
+          bootFill.style.width = `${pct}%`;
+          index++;
+        } else {
+          clearInterval(interval);
+          const bootOverlay = document.getElementById("boot");
+          bootOverlay.classList.add("opacity-0");
+          setTimeout(() => {
+            bootOverlay.style.display = "none";
+            initGSAPCines();
+          }, 700);
+        }
+      }, 250);
+
+      initThreeJS();
+      initBackgroundMiniSims();
+      initCursorDynamics();
+    });
+
+    // --------------- GSAP CINEMATICS ---------------
+    function initGSAPCines() {
+      gsap.set("#hero-sub, #hero-btns, #hero-stats, #hero-dashboard", { opacity: 0 });
+
+      gsap.from(".hero-title .line", {
+        duration: 1.2,
+        y: "100%",
+        ease: "power4.out",
+        stagger: 0.15
+      });
+
+      gsap.to("#hero-sub", { duration: 1, opacity: 1, y: 0, delay: 0.8, ease: "power2.out" });
+      gsap.to("#hero-btns", { duration: 1, opacity: 1, y: 0, delay: 1.0, ease: "power2.out" });
+      gsap.to("#hero-stats", { duration: 1, opacity: 1, delay: 1.2, ease: "power2.out" });
+      gsap.to("#hero-dashboard", { duration: 1.2, opacity: 1, delay: 1.4, ease: "power2.out" });
+    }
+
+    // --------------- STREAMING_CHUNK: Initializing Three.js rendering core ---------------
+    // --------------- THREE.JS SYSTEM ---------------
+    function initThreeJS() {
+      const container = document.getElementById('three-canvas');
+      scene = new THREE.Scene();
+      
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+      camera.position.z = 180;
+
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      const starCount = 1200;
+      const positions = new Float32Array(starCount * 3);
+      const colors = new Float32Array(starCount * 3);
+      const colorOptions = [
+        new THREE.Color('#00f7ff'),
+        new THREE.Color('#9d00ff'),
+        new THREE.Color('#ff2bd6')
+      ];
+
+      for (let i = 0; i < starCount * 3; i += 3) {
+        const theta = Math.random() * 2 * Math.PI;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = 100 + Math.random() * 200;
+
+        positions[i] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i+1] = r * Math.sin(phi) * Math.sin(theta);
+        positions[i+2] = r * Math.cos(phi);
+
+        const col = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+        colors[i] = col.r;
+        colors[i+1] = col.g;
+        colors[i+2] = col.b;
+      }
+
+      const starGeometry = new THREE.BufferGeometry();
+      starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const pSize = window.innerWidth < 768 ? 1.2 : 2.2;
+      const starMaterial = new THREE.PointsMaterial({
+        size: pSize,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.7,
+        sizeAttenuation: true
+      });
+
+      starParticles = new THREE.Points(starGeometry, starMaterial);
+      scene.add(starParticles);
+
+      const knotGeo = new THREE.TorusKnotGeometry(25, 4.5, 100, 16);
+      const knotMat = new THREE.MeshPhongMaterial({
+        color: 0x00f7ff,
+        emissive: 0x9d00ff,
+        specular: 0xffffff,
+        shininess: 80,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.45
+      });
+      mainKnot = new THREE.Mesh(knotGeo, knotMat);
+      scene.add(mainKnot);
+
+      const pLight1 = new THREE.PointLight(0x00f7ff, 2, 300);
+      pLight1.position.set(50, 50, 50);
+      scene.add(pLight1);
+
+      const pLight2 = new THREE.PointLight(0xff2bd6, 2, 300);
+      pLight2.position.set(-50, -50, 50);
+      scene.add(pLight2);
+
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.2);
+      scene.add(ambLight);
+
+      function animateScene() {
+        requestAnimationFrame(animateScene);
+        
+        starParticles.rotation.y += 0.0004;
+        starParticles.rotation.x += 0.0001;
+
+        if (mainKnot) {
+          mainKnot.rotation.y += 0.006;
+          mainKnot.rotation.z += 0.003;
+        }
+
+        renderer.render(scene, camera);
+      }
+      
+      animateScene();
+      window.addEventListener('resize', onResizeThree);
+    }
+
+    function onResizeThree() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // --------------- STREAMING_CHUNK: Setting up visual cursor follower trail ---------------
+    // --------------- CURSOR DYNAMICS ---------------
+    function initCursorDynamics() {
+      const dot = document.getElementById('cur-dot');
+      const cross = document.getElementById('cur-cross');
+      const label = document.getElementById('cur-label');
+      const trailCanvas = document.getElementById('particles-canvas');
+      const trailCtx = trailCanvas.getContext('2d');
+
+      let mX = -100, mY = -100;
+      let cX = -100, cY = -100;
+
+      trailCanvas.width = window.innerWidth;
+      trailCanvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        trailCanvas.width = window.innerWidth;
+        trailCanvas.height = window.innerHeight;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        mX = e.clientX;
+        mY = e.clientY;
+        
+        const glow = document.getElementById('mouse-ambient-glow');
+        if (glow) {
+          glow.style.left = `${mX - 350}px`;
+          glow.style.top = `${mY - 350}px`;
+        }
+      });
+
+      function updateCursor() {
+        let dx = mX - cX;
+        let dy = mY - cY;
+        
+        cX += dx * 0.14;
+        cY += dy * 0.14;
+
+        dot.style.left = `${cX}px`;
+        dot.style.top = `${cY}px`;
+
+        cross.style.left = `${cX}px`;
+        cross.style.top = `${cY}px`;
+
+        label.style.left = `${cX}px`;
+        label.style.top = `${cY}px`;
+
+        requestAnimationFrame(updateCursor);
+      }
+      updateCursor();
+
+      const hoverable = document.querySelectorAll('button, a, .sv-card, .pj-card, .pr-card, input, textarea');
+      hoverable.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          dot.style.transform = 'translate(-50%, -50%) scale(1.8)';
+          dot.style.background = '#ff2bd6';
+          dot.style.boxShadow = '0 0 15px #ff2bd6';
+          
+          const arms = cross.querySelectorAll('.arm');
+          arms.forEach(arm => {
+            arm.style.background = '#ff2bd6';
+            if (arm.classList.contains('t') || arm.classList.contains('b')) {
+              arm.style.height = '24px';
+            } else {
+              arm.style.width = '24px';
+            }
+          });
+          label.innerText = "SYS_COM_TARGET";
+          label.style.opacity = "1";
+        });
+
+        el.addEventListener('mouseleave', () => {
+          dot.style.transform = 'translate(-50%, -50%) scale(1)';
+          dot.style.background = '#00f7ff';
+          dot.style.boxShadow = '0 0 10px #00f7ff';
+
+          const arms = cross.querySelectorAll('.arm');
+          arms.forEach(arm => {
+            arm.style.background = '#00f7ff';
+            if (arm.classList.contains('t') || arm.classList.contains('b')) {
+              arm.style.height = '18px';
+            } else {
+              arm.style.width = '18px';
+            }
+          });
+          label.style.opacity = "0";
+        });
+      });
+
+      let trailArray = [];
+      function TrailNode(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 4 + 1.2;
+        this.vx = Math.random() * 1.2 - 0.6;
+        this.vy = Math.random() * 1.2 - 0.6;
+        this.life = 1.0;
+      }
+
+      function drawTrails() {
+        trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+        
+        if (Math.abs(mX - cX) > 0.5 || Math.abs(mY - cY) > 0.5) {
+          if (trailArray.length < 120) {
+            trailArray.push(new TrailNode(cX, cY));
+          }
+        }
+
+        for (let i = 0; i < trailArray.length; i++) {
+          let node = trailArray[i];
+          trailCtx.fillStyle = `rgba(0, 247, 255, ${node.life * 0.35})`;
+          trailCtx.beginPath();
+          trailCtx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+          trailCtx.fill();
+
+          node.x += node.vx;
+          node.y += node.vy;
+          node.life -= 0.035;
+
+          if (node.life <= 0) {
+            trailArray.splice(i, 1);
+            i--;
+          }
+        }
+        requestAnimationFrame(drawTrails);
+      }
+      drawTrails();
+    }
+
+    // --------------- PROJECT MINI SIMULATORS ---------------
+    function initBackgroundMiniSims() {
+      for (let s = 1; s <= 2; s++) {
+        const can = document.getElementById(`p${s}-canvas`);
+        if (!can) continue;
+        const ctx = can.getContext('2d');
+        can.width = 400;
+        can.height = 220;
+
+        let phase = 0;
+        function updateMini() {
+          ctx.clearRect(0, 0, can.width, can.height);
+          ctx.lineWidth = 1.2;
+
+          if (s === 1) {
+            ctx.strokeStyle = 'rgba(0, 247, 255, 0.25)';
+            ctx.beginPath();
+            for (let x = 0; x < can.width; x += 10) {
+              let y = can.height / 2 + Math.sin(x * 0.02 + phase) * 30 * Math.sin(x * 0.005);
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          } else {
+            ctx.strokeStyle = 'rgba(157, 0, 255, 0.3)';
+            let cx = can.width / 2;
+            let cy = can.height / 2;
+            for (let r = 25; r < 110; r += 20) {
+              ctx.beginPath();
+              ctx.arc(cx + Math.cos(phase * 0.5) * 8, cy, r, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          }
+          phase += 0.025;
+          requestAnimationFrame(updateMini);
+        }
+        updateMini();
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('scroll-bar');
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0) {
+        let pct = (window.scrollY / max) * 100;
+        bar.style.width = `${pct}%`;
+      }
+    });
+
+    function scrollToSec(id) {
+      const elem = document.getElementById(id);
+      if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('opacity-0');
+      menu.classList.toggle('pointer-events-none');
+      menu.classList.toggle('translate-y-[-10px]');
+    }
+
+    // --------------- STREAMING_CHUNK: Setting up Shell interactions ---------------
+    // --------------- SHELL LOGIC (WITH GEMINI API BACKUP) ---------------
+    const trmInput = document.getElementById('trm-input');
+    const trmOutput = document.getElementById('trm-output');
+
+    if (trmInput) {
+      trmInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const val = trmInput.value.trim();
+          trmInput.value = '';
+          if (val !== '') execShell(val);
+        }
+      });
+    }
+
+    function printShell(text, cls = '') {
+      const div = document.createElement('div');
+      div.className = `t-out ${cls}`;
+      div.innerText = text;
+      trmOutput.appendChild(div);
+      trmOutput.scrollTop = trmOutput.scrollHeight;
+    }
+
+    async function execShell(raw) {
+      const cmd = raw.toLowerCase().trim();
+      printShell(`~$ ${raw}`, 'text-white/40');
+
+      if (cmd === 'help') {
+        printShell(`Available directives:
+ - about: Displays Amaan's technical architectural parameters.
+ - skills: Renders verified capability models.
+ - labs: Validates functional 2D simulation grids.
+ - run lab1 / run lab2: Boots corresponding portal canvas overlay immediately.
+ - secure_handshake: Verifies integrity of active return signal coordinates.
+ - clear: Purges terminal diagnostics cache buffer.
+ - pay: Directly initialises Starter tier gateway interface.
+ [Any other input triggers Live Gemini Core Intelligence automatically]`, 'text-purplePlasma');
+      } else if (cmd === 'about') {
+        printShell("Amaan Siddiqui is a Creative Technologist specializing in premium animations (GSAP/ThreeJS), custom styling pipelines, and fully-responsive layout architecture.", "text-cyanNeon");
+      } else if (cmd === 'skills') {
+        printShell("VECTORS:\n- Layout Architecture: 95% efficiency\n- ThreeJS Rendering & Space Physics: 90% accuracy\n- GSAP Animation Flows: 94% flow", "text-pinkHologram");
+      } else if (cmd === 'labs') {
+        printShell("PORTS ONLINE...\nLAB_01: NEXUS 3D VIEWPORTS [STABLE]\nLAB_02: DRIFT ANCHOR NET [STABLE]", "text-emeraldGlow");
+      } else if (cmd === 'run lab1') {
+        openDemoModal(0);
+        printShell("LAUNCHING LAB_01 MOVEMENT CANVAS...", "text-purplePlasma");
+      } else if (cmd === 'run lab2') {
+        openDemoModal(1);
+        printShell("LAUNCHING LAB_02 MOVEMENT CANVAS...", "text-purplePlasma");
+      } else if (cmd === 'clear') {
+        trmOutput.innerHTML = '';
+        printShell("Terminal diagnostic buffer cleared. Type help to check ports.", "text-pinkHologram");
+      } else if (cmd === 'secure_handshake') {
+        printShell("Handshake complete. Secure signal verified.", "text-emeraldGlow");
+      } else if (cmd === 'pay') {
+        initiateClientPay("Starter Plan", 999);
+        printShell("Initialising Starter payment model...", "text-purplePlasma");
+      } else {
+        // UNRECOGNIZED COMMANDS ROUTE TO GEMINI
+        printShell(`[AI TERMINAL COGNITION INITIATED — QUERYING GEMINI ENGINE]`, "text-cyanNeon/80 animate-pulse");
+        
+        try {
+          const systemPrompt = `
+You are the integrated command shell terminal emulator for Amaan Siddiqui's portfolio.
+The user is talking directly inside the terminal interface. They entered the unrecognized shell string: "${raw}".
+Respond briefly, like a highly intelligent computer terminal response agent, adhering to Amaan Siddiqui's profile info.
+Maximum length: 2 or 3 lines. Output terminal style decorations.
+          `;
+          const responseText = await callGeminiAPI(raw, systemPrompt);
+          printShell(`[GEMINI CORE RESPONSE]:\n${responseText}`, "text-emeraldGlow");
+        } catch (error) {
+          printShell(`[AI SHELL CORE OFFLINE]: Fallback initialized. Command error: Unknown parameter.`, "text-pinkHologram");
+        }
+      }
+    }
+
+    function openTerminalCommand(cmdText) {
+      scrollToSec('terminal-section');
+      trmInput.value = cmdText;
+      trmInput.focus();
+    }
+
+    // --------------- DIRECT PACKET SEND HANDLER ---------------
+    function handleSendMsg(e) {
+      e.preventDefault();
+      const name = document.getElementById('c-name').value;
+      const email = document.getElementById('c-email').value;
+      const msg = document.getElementById('c-msg').value;
+
+      scrollToSec('terminal-section');
+      printShell(`~$ INBOUND CONNECT DIRECTIVE INITIATED`, 'text-purplePlasma');
+      printShell(`Target: amaanmohd8186@gmail.com\nProcessing ID: ${name}\nEmail: ${email}\nPackaging holographic data...`, 'text-cyanNeon');
+
+      setTimeout(() => {
+        printShell(`TRANSMISSION INITIALIZED! Directing package through client SMTP dispatch...`, 'text-emeraldGlow');
+        
+        const subject = encodeURIComponent(`[QUANTUM CONNECT] Secure Packet from ${name}`);
+        const body = encodeURIComponent(`Secure ID: ${name}\nReturn Address: ${email}\n\nPacket Payload:\n-----------------------------------\n${msg}\n-----------------------------------\n\n[End of Secure Signal Payload]`);
+        
+        window.location.href = `mailto:amaanmohd8186@gmail.com?subject=${subject}&body=${body}`;
+
+        document.getElementById('c-name').value = '';
+        document.getElementById('c-email').value = '';
+        document.getElementById('c-msg').value = '';
+      }, 1500);
+    }
+
+    // --------------- NEURAL CHAT COGNITION (REAL LIVE GEMINI ENGINE) ---------------
+    function toggleNexusAI() {
+      const win = document.getElementById('nexus-win');
+      win.classList.toggle('scale-0');
+    }
+
+    function checkNxKey(e) {
+      if (e.key === 'Enter') sendNxMsg();
+    }
+
+    async function sendNxMsg() {
+      const inp = document.getElementById('nx-inp');
+      const query = inp.value.trim();
+      if (query === '') return;
+      inp.value = '';
+
+      const box = document.getElementById('nx-msgs');
+      
+      // User message bubble
+      const uDiv = document.createElement('div');
+      uDiv.className = 'msg user p-3 bg-cyanNeon/10 border border-cyanNeon/10 max-w-[85%] self-end text-white';
+      uDiv.innerText = query;
+      box.appendChild(uDiv);
+      box.scrollTop = box.scrollHeight;
+
+      // Real typing placeholder
+      const typing = document.createElement('div');
+      typing.className = 'msg ai p-3 bg-purplePlasma/10 border border-purplePlasma/10 max-w-[85%] self-start flex gap-1.5 items-center typing-indicator';
+      typing.id = 'nx-typing';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      box.appendChild(typing);
+      box.scrollTop = box.scrollHeight;
+
+      try {
+        const replyText = await callGeminiAPI(query, SYSTEM_PERSONA_PROMPT);
+        const typingEl = document.getElementById('nx-typing');
+        if (typingEl) typingEl.remove();
+
+        const rDiv = document.createElement('div');
+        rDiv.className = 'msg ai p-3 bg-purplePlasma/10 border border-purplePlasma/10 max-w-[85%] self-start text-white/85';
+        rDiv.innerText = replyText;
+        box.appendChild(rDiv);
+        box.scrollTop = box.scrollHeight;
+      } catch (error) {
+        const typingEl = document.getElementById('nx-typing');
+        if (typingEl) typingEl.remove();
+
+        const errDiv = document.createElement('div');
+        errDiv.className = 'msg ai p-3 bg-pinkHologram/10 border border-pinkHologram/20 max-w-[85%] self-start text-pinkHologram';
+        errDiv.innerText = "Connection latency error. The AS Core shell is calibrating. Please verify signal.";
+        box.appendChild(errDiv);
+        box.scrollTop = box.scrollHeight;
+      }
+    }
+
+    // --------------- STREAMING_CHUNK: Integrating Gemini Blueprint APIs ---------------
+    // --------------- REAL GEMINI PROPOSAL BLUEPRINT GENERATION ---------------
+    async function generateAIProjectBlueprint() {
+      const promptInput = document.getElementById('ai-blueprint-prompt');
+      const seed = promptInput.value.trim();
+      if (!seed) {
+        alert("Please enter a concept seed first to synthesize standard vectors.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-blueprint-generate');
+      const pane = document.getElementById('blueprint-result-pane');
+      const textOutput = document.getElementById('blueprint-markdown-text');
+
+      btn.disabled = true;
+      btn.innerHTML = `COMPILING QUANTUM NODES <i class="fa-solid fa-gear animate-spin ml-2"></i>`;
+      pane.classList.remove('hidden');
+      textOutput.innerText = "Synthesized data compiling through active Gemini nodes... (generally takes 2-4 seconds)";
+
+      const systemContext = `
+You are the "Amaan Siddiqui Quantum Architectural Compiler".
+The user wants to generate a high-end, premium freelance Web proposal matching the seed: "${seed}".
+Structure your response as a professional system blueprint:
+1. WebGL/Three.js visual scenes planned (describe the cool shaders, camera motions).
+2. GSAP motion timeline details.
+3. recommended portfolio pricing match tier (Starter / Pro / Ultimate) with a witty rationale.
+Keep the style clean, futuristic, professional, and visually amazing.
+      `;
+
+      try {
+        const responseText = await callGeminiAPI(seed, systemContext);
+        textOutput.innerText = responseText;
+      } catch (err) {
+        textOutput.innerText = "Failed to communicate with the Gemini Core API. Please ensure visual handshake connections are unblocked.";
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `GENERATE QUANTUM BLUEPRINT <i class="fa-solid fa-wand-magic-sparkles ml-2"></i>`;
+      }
+    }
+
+    // --------------- STREAMING_CHUNK: Creating fetch hooks with backoff structures ---------------
+    // Universal Gemini API Fetch Core with Exponential Backoff
+    async function callGeminiAPI(userQuery, systemPrompt, retries = 3, delay = 1000) {
+      const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        }
+      };
+
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await fetch(GEMINI_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            if (response.status === 429 && attempt < retries) {
+              // Throttle hit, backoff exponentially
+              await new Promise(res => setTimeout(res, delay * attempt));
+              continue;
+            }
+            throw new Error(`HTTP dynamic state parameter error: ${response.status}`);
+          }
+
+          const result = await response.json();
+          const candidate = result.candidates?.[0];
+          if (candidate && candidate.content?.parts?.[0]?.text) {
+            return candidate.content.parts[0].text;
+          }
+          throw new Error("Empty candidate payload array encountered.");
+        } catch (error) {
+          if (attempt === retries) throw error;
+          await new Promise(res => setTimeout(res, delay * attempt));
+        }
+      }
+    }
+
+    // --------------- DETAILED CHECKOUT INTEGRATION ---------------
+    function initiateClientPay(plan, amount) {
+      currentSelectedPlan = plan;
+      currentSelectedAmount = amount;
+
+      document.getElementById('pay-selected-plan').innerText = plan.toUpperCase();
+      document.getElementById('pay-val-str').innerText = amount.toLocaleString('en-IN');
+      document.getElementById('pay-modal').classList.add('flex');
+      document.getElementById('pay-modal').classList.remove('hidden');
+    }
+
+    function closePayModal() {
+      document.getElementById('pay-modal').classList.add('hidden');
+      document.getElementById('pay-modal').classList.remove('flex');
+    }
+
+    function launchRazorpayCheckout(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('pay-name').value.trim();
+      const email = document.getElementById('pay-email').value.trim();
+      const phone = document.getElementById('pay-phone').value.trim();
+
+      closePayModal();
+
+      const buyButtons = document.querySelectorAll('.btn-buy');
+      buyButtons.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
+
+      const paiseAmount = currentSelectedAmount * 100;
+      const options = {
+        "key": "rzp_test_Sr6xJPpy2gxzwf",
+        "amount": paiseAmount,
+        "currency": "INR",
+        "name": "AMAAN SIDDIQUI",
+        "description": `Deployment Protocol: ${currentSelectedPlan}`,
+        "image": "https://placehold.co/120x120/020308/00f7ff?text=AS_PORTAL",
+        "handler": function (response) {
+          buyButtons.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+          triggerSuccessModal(response.razorpay_payment_id || `TXN_RZP_${Math.random().toString(36).substr(2,9).toUpperCase()}`);
+        },
+        "prefill": {
+          "name": name,
+          "email": email,
+          "contact": phone
+        },
+        "notes": {
+          "target_architecture": currentSelectedPlan
+        },
+        "theme": {
+          "color": "#00f7ff"
+        },
+        "modal": {
+          "ondismiss": function() {
+            buyButtons.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+          }
+        }
+      };
+
+      try {
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch (err) {
+        console.error("Razorpay error:", err);
+        buyButtons.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+        triggerSuccessModal(`TXN_SANDBOX_${Math.random().toString(36).substr(2,9).toUpperCase()}`);
+      }
+    }
+
+    // --------------- SUCCESS CELEBRATION EFFECTS ---------------
+    function triggerSuccessModal(txnId) {
+      document.getElementById('succ-trans-id').innerText = txnId;
+      document.getElementById('succ-popup').classList.add('flex');
+      document.getElementById('succ-popup').classList.remove('hidden');
+
+      startCelebrationConfetti();
+    }
+
+    function closeSuccessPopup() {
+      document.getElementById('succ-popup').classList.add('hidden');
+      document.getElementById('succ-popup').classList.remove('flex');
+
+      if (customConfettiId) {
+        cancelAnimationFrame(customConfettiId);
+        customConfettiId = null;
+      }
+    }
+
+    function startCelebrationConfetti() {
+      const c = document.getElementById('confetti-canvas');
+      const ctx = c.getContext('2d');
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+
+      const pCount = 150;
+      const particles = [];
+      const colors = ['#00f7ff', '#9d00ff', '#ff2bd6', '#00ffb3'];
+
+      for (let i = 0; i < pCount; i++) {
+        particles.push({
+          x: Math.random() * c.width,
+          y: Math.random() * c.height - c.height,
+          size: Math.random() * 7 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedX: Math.random() * 4 - 2,
+          speedY: Math.random() * 5 + 4,
+          rot: Math.random() * Math.PI,
+          rotSpeed: Math.random() * 0.1 - 0.05
+        });
+      }
+
+      function drawConfetti() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        
+        for (let i = 0; i < particles.length; i++) {
+          let p = particles[i];
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+          ctx.restore();
+
+          p.x += p.speedX;
+          p.y += p.speedY;
+          p.rot += p.rotSpeed;
+
+          if (p.y > c.height) {
+            p.y = -10;
+            p.x = Math.random() * c.width;
+          }
+        }
+        customConfettiId = requestAnimationFrame(drawConfetti);
+      }
+      drawConfetti();
+    }
+
+    // --------------- STREAMING_CHUNK: Injecting custom wave formulas into canvas simulators ---------------
+    // --------------- MODAL WAVE SIMULATIONS ---------------
+    function openDemoModal(projectIdx) {
+      currentDemoProj = projectIdx;
+      document.getElementById('demo-modal').classList.add('flex');
+      document.getElementById('demo-modal').classList.remove('hidden');
+
+      demoCanvas = document.getElementById('demo-canvas');
+      demoCtx = demoCanvas.getContext('2d');
+
+      demoCanvas.width = demoCanvas.parentElement.clientWidth;
+      demoCanvas.height = 380;
+
+      demoInteractionsCount = 0;
+      demoPhase = 0;
+
+      const dTitle = document.getElementById('demo-title');
+      const dAction = document.getElementById('demo-action-btn');
+      const dDesc = document.getElementById('demo-desc');
+      const dTag1 = document.getElementById('demo-tag-1');
+      const dTag2 = document.getElementById('demo-tag-2');
+
+      if (projectIdx === 0) {
+        dTitle.innerText = "NEXUS 3D MOVEMENT MATRIX [STABLE]";
+        dAction.innerText = "INJECT INTERFERENCE WAVE";
+        dDesc.innerText = "Simulating double-slit interference waves inside mathematical coordinate boundaries.";
+        dTag1.innerText = "INTERFERENCE_GRID";
+        dTag2.innerText = "FPS_60_STABLE";
+        runWaveDemo();
+      } else {
+        dTitle.innerText = "ANALYTICS ENERGY CHANNELS [STABLE]";
+        dAction.innerText = "COLLAPSE FORCE NET";
+        dDesc.innerText = "Evaluating real-time data drift loops, calculating system particle gravity parameters.";
+        dTag1.innerText = "GRAVITY_BOUNDS";
+        dTag2.innerText = "DRIFT_VECTORS";
+        runGravityDemo();
+      }
+    }
+
+    function closeDemoModal() {
+      document.getElementById('demo-modal').classList.add('hidden');
+      document.getElementById('demo-modal').classList.remove('flex');
+      if (demoAnimId) {
+        cancelAnimationFrame(demoAnimId);
+        demoAnimId = null;
+      }
+    }
+
+    function runWaveDemo() {
+      function draw() {
+        if (!demoCtx) return;
+        demoCtx.fillStyle = 'rgba(2, 3, 8, 0.2)';
+        demoCtx.fillRect(0, 0, demoCanvas.width, demoCanvas.height);
+
+        const freq = (3.5 + Math.sin(demoPhase * 0.4) * 1.5 + demoInteractionsCount).toFixed(2);
+        const ratio = (0.78 + Math.cos(demoPhase) * 0.12).toFixed(3);
+        document.getElementById('demo-hud-metrics').innerHTML = `WAVE_FREQUENCY: ${freq} Hz<br>ENERGY_RESONANCE: ${ratio}<br>PARALLAX: SYS_STABLE`;
+
+        demoCtx.lineWidth = 1.8;
+        const offset = demoInteractionsCount * 10;
+
+        for (let line = 0; line < 3; line++) {
+          demoCtx.strokeStyle = line === 0 ? 'rgba(0, 247, 255, 0.75)' : (line === 1 ? 'rgba(157, 0, 255, 0.5)' : 'rgba(255, 43, 214, 0.4)');
+          demoCtx.beginPath();
+          for (let x = 0; x < demoCanvas.width; x++) {
+            let amp = 40 + Math.sin(demoPhase + line) * 15;
+            let y = demoCanvas.height / 2 + Math.sin(x * 0.007 + demoPhase + line * 0.6) * amp * Math.cos(x * 0.002 - demoPhase * 0.3);
+            
+            if (offset > 0) {
+              y += Math.sin(x * 0.04) * offset * Math.exp(-Math.abs(x - demoCanvas.width/2) / 180);
+            }
+
+            if (x === 0) demoCtx.moveTo(x, y);
+            else demoCtx.lineTo(x, y);
+          }
+          demoCtx.stroke();
+        }
+
+        if (demoInteractionsCount > 0) demoInteractionsCount *= 0.96;
+        demoPhase += 0.035;
+        demoAnimId = requestAnimationFrame(draw);
+      }
+      if (demoAnimId) cancelAnimationFrame(demoAnimId);
+      draw();
+    }
+
+    function runGravityDemo() {
+      const particles = [];
+      const pCount = 60;
+      for (let i = 0; i < pCount; i++) {
+        particles.push({
+          x: Math.random() * demoCanvas.width,
+          y: Math.random() * demoCanvas.height,
+          ox: Math.random() * demoCanvas.width,
+          oy: Math.random() * demoCanvas.height,
+          size: Math.random() * 2.5 + 1
+        });
+      }
+
+      let mx = demoCanvas.width / 2, my = demoCanvas.height / 2;
+      demoCanvas.addEventListener('mousemove', (e) => {
+        const r = demoCanvas.getBoundingClientRect();
+        mx = e.clientX - r.left;
+        my = e.clientY - r.top;
+      });
+
+      function draw() {
+        if (!demoCtx) return;
+        demoCtx.fillStyle = '#020308';
+        demoCtx.fillRect(0, 0, demoCanvas.width, demoCanvas.height);
+
+        const pull = (1.1 + demoInteractionsCount * 0.4).toFixed(2);
+        document.getElementById('demo-hud-metrics').innerHTML = `GRAVITY_PULL: ${pull}x<br>ENERGY_DRIFT: STABLE<br>RENDER: 60FPS`;
+
+        demoCtx.strokeStyle = 'rgba(0, 247, 255, 0.04)';
+        demoCtx.lineWidth = 1;
+        demoCtx.beginPath();
+        demoCtx.arc(mx, my, 80 + demoInteractionsCount * 12, 0, Math.PI * 2);
+        demoCtx.stroke();
+
+        for (let i = 0; i < pCount; i++) {
+          let p = particles[i];
+          let dx = mx - p.x;
+          let dy = my - p.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 150 + demoInteractionsCount * 25) {
+            let force = (150 - dist) / 400;
+            p.x += (dx / dist) * force * (2 + demoInteractionsCount);
+            p.y += (dy / dist) * force * (2 + demoInteractionsCount);
+          } else {
+            p.x += (p.ox - p.x) * 0.05;
+            p.y += (p.oy - p.y) * 0.05;
+          }
+
+          demoCtx.fillStyle = i % 2 === 0 ? '#ff2bd6' : '#00f7ff';
+          demoCtx.beginPath();
+          demoCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          demoCtx.fill();
+
+          for (let j = i + 1; j < pCount; j++) {
+            let p2 = particles[j];
+            let ndx = p2.x - p.x;
+            let ndy = p2.y - p.y;
+            let ndist = Math.sqrt(ndx * ndx + ndy * ndy);
+
+            if (ndist < 70) {
+              demoCtx.strokeStyle = `rgba(157, 0, 255, ${(1 - ndist/70) * 0.18})`;
+              demoCtx.beginPath();
+              demoCtx.moveTo(p.x, p.y);
+              demoCtx.lineTo(p2.x, p2.y);
+              demoCtx.stroke();
+            }
+          }
+        }
+
+        if (demoInteractionsCount > 0) demoInteractionsCount *= 0.95;
+        demoAnimId = requestAnimationFrame(draw);
+      }
+      if (demoInteractionsCount > 0) demoInteractionsCount *= 0.95;
+      draw();
+    }
+
+    function triggerDemoInteraction() {
+      demoInteractionsCount = 8;
+      printShell(`~$ FORCE VALUE INJECTED IN LAB_${currentDemoProj === 0 ? '01' : '02'}`, 'text-purplePlasma');
+    }
+  </script>
+</body>
+</html>
